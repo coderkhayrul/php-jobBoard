@@ -8,22 +8,30 @@ if (isset($_SESSION['auth_id'])) {
 }
 
 if (isset($_POST['submit'])) {
-    if (empty($_POST['userName']) || empty($_POST['userEmail']) || empty($_POST['password']) || empty($_POST['repeatPassword'])) {
+    $userName = $_POST['userName'];
+    $userEmail = $_POST['userEmail'];
+    $userType = $_POST['userType'];
+    $password = $_POST['password'];
+    $repeatPassword = $_POST['repeatPassword'];
+    $image = 'default.png';
+    $created_at = date('Y-m-d H:i:s');
+
+    // Email Validation
+    $statement = $connection->query("SELECT * FROM users WHERE email = '$userEmail' || username = '$userName'");
+    $statement->execute();
+    $validation = $statement->rowCount();
+
+    if($validation > 0){
+        $message = "<div class='alert alert-danger bg-danger text-white'>Name Or Email already exists</div>";
+    }else if (empty($userName) || empty($userEmail) || empty($password) || empty($repeatPassword)) {
         $message = "<div class='alert alert-danger bg-danger text-white'>Input fields are empty</div>";
-    }else if ($_POST['password'] !== $_POST['repeatPassword']) {
+    }else if ($password !== $repeatPassword) {
         $message = "<div class='alert alert-danger bg-danger text-white'>Passwords do not match</div>";
-    }else if (!filter_var($_POST['userEmail'], FILTER_VALIDATE_EMAIL)) {
+    }else if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
         $message = "<div class='alert alert-danger bg-danger text-white'>Invalid email address</div>";
-    }else if (strlen($_POST['password']) < 6) {
+    }else if (strlen($password) < 6) {
         $message = "<div class='alert alert-danger bg-danger text-white'>Password must be at least 6 characters</div>";
     }else{
-        $userName = $_POST['userName'];
-        $userEmail = $_POST['userEmail'];
-        $userType = $_POST['userType'];
-        $password = $_POST['password'];
-        $repeatPassword = $_POST['repeatPassword'];
-        $image = 'default.png';
-        $created_at = date('Y-m-d H:i:s');
         try {
             $sql = "INSERT INTO users (username, email, usertype, password, image, created_at) VALUES (:userName, :userEmail, :userType, :password, :image, :created_at)";
             $statement = $connection->prepare($sql);
