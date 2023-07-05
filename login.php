@@ -1,6 +1,10 @@
 <?php
-require "../includes/header.php";
+require "config/database.php";
+require "includes/header.php";
 global $connection;
+if (isset($_SESSION['auth_id'])) {
+    header("Location: " . BASE_URL, true, 301);
+}
 
 if (isset($_POST['submit'])) {
     if (empty($_POST['email']) || empty($_POST['password'])) {
@@ -17,13 +21,12 @@ if (isset($_POST['submit'])) {
             $user = $statement->fetch(PDO::FETCH_OBJ);
             if ($user) {
                 if (password_verify($password, $user->password)) {
-//                    $_SESSION['auth_id'] = $user->id;
-//                    $_SESSION['auth_name'] = $user->username;
-//                    $_SESSION['auth_email'] = $user->email;
-//                    $_SESSION['auth_image'] = $user->image;
-//                    $_SESSION['auth_created_at'] = $user->created_at;
-                    $message = "<div class='alert alert-success bg-success text-white'>Login Success</div>";
-//                    header("Location: ../index.php", true, 301);
+                    $_SESSION['auth_id'] = $user->id;
+                    $_SESSION['auth_name'] = $user->username;
+                    $_SESSION['auth_email'] = $user->email;
+                    $_SESSION['auth_image'] = $user->image;
+                    $_SESSION['auth_created_at'] = $user->created_at;
+                    header("Location: " . BASE_URL, true, 301);
                 }else{
                     $message = "<div class='alert alert-danger bg-danger text-white'>Wrong Password</div>";
                 }
@@ -57,7 +60,13 @@ if (isset($_POST['submit'])) {
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-          <?php if (isset($message)) { echo $message; } ?>
+          <?php
+          if (isset($message)) { echo $message; }
+
+          if(isset($_SESSION['reg_message'] ))
+            echo $_SESSION['reg_message'];
+            unset($_SESSION['reg_message']) ;
+          ?>
         <form action="login.php" method="POST" class="p-4 border rounded">
           <div class="row form-group">
             <div class="col-md-12 mb-3 mb-md-0">
@@ -84,4 +93,4 @@ if (isset($_POST['submit'])) {
   </div>
 </section>
 
-<?php require "../includes/footer.php"; ?>
+<?php require "includes/footer.php"; ?>

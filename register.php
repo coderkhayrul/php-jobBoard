@@ -1,43 +1,50 @@
 <?php
-require "../includes/header.php";
+require "config/database.php";
+require "includes/header.php";
+
 global $connection;
+if (isset($_SESSION['auth_id'])) {
+    header("Location: " . BASE_URL, true, 301);
+}
 
-
-    if (isset($_POST['submit'])) {
-        if (empty($_POST['userName']) || empty($_POST['userEmail']) || empty($_POST['password']) || empty($_POST['repeatPassword'])) {
-            $message = "<div class='alert alert-danger bg-danger text-white'>Input fields are empty</div>";
-        }else if ($_POST['password'] !== $_POST['repeatPassword']) {
-            $message = "<div class='alert alert-danger bg-danger text-white'>Passwords do not match</div>";
-        }else{
-            $userName = $_POST['userName'];
-            $userEmail = $_POST['userEmail'];
-            $userType = $_POST['userType'];
-            $password = $_POST['password'];
-            $repeatPassword = $_POST['repeatPassword'];
-            $image = 'default.png';
-            $created_at = date('Y-m-d H:i:s');
-            try {
-                $sql = "INSERT INTO users (username, email, usertype, password, image, created_at) VALUES (:userName, :userEmail, :userType, :password, :image, :created_at)";
-                $statement = $connection->prepare($sql);
-                $statement->execute([
-                    ':userName' => $userName,
-                    ':userEmail' => $userEmail,
-                    ':userType' => $userType,
-                    ':password' => password_hash($password, PASSWORD_DEFAULT),
-                    ':image' => $image,
-                    ':created_at' =>$created_at
-                ]);
-                $message =  "<div class='alert alert-success bg-success text-white'>User Registration Successfully</div>";
-                header("Location: login.php", true, 301);
-            }catch (PDOException $e) {
-                $message = $e->getMessage();
-            }
+if (isset($_POST['submit'])) {
+    if (empty($_POST['userName']) || empty($_POST['userEmail']) || empty($_POST['password']) || empty($_POST['repeatPassword'])) {
+        $message = "<div class='alert alert-danger bg-danger text-white'>Input fields are empty</div>";
+    }else if ($_POST['password'] !== $_POST['repeatPassword']) {
+        $message = "<div class='alert alert-danger bg-danger text-white'>Passwords do not match</div>";
+    }else if (!filter_var($_POST['userEmail'], FILTER_VALIDATE_EMAIL)) {
+        $message = "<div class='alert alert-danger bg-danger text-white'>Invalid email address</div>";
+    }else if (strlen($_POST['password']) < 6) {
+        $message = "<div class='alert alert-danger bg-danger text-white'>Password must be at least 6 characters</div>";
+    }else{
+        $userName = $_POST['userName'];
+        $userEmail = $_POST['userEmail'];
+        $userType = $_POST['userType'];
+        $password = $_POST['password'];
+        $repeatPassword = $_POST['repeatPassword'];
+        $image = 'default.png';
+        $created_at = date('Y-m-d H:i:s');
+        try {
+            $sql = "INSERT INTO users (username, email, usertype, password, image, created_at) VALUES (:userName, :userEmail, :userType, :password, :image, :created_at)";
+            $statement = $connection->prepare($sql);
+            $statement->execute([
+                ':userName' => $userName,
+                ':userEmail' => $userEmail,
+                ':userType' => $userType,
+                ':password' => password_hash($password, PASSWORD_DEFAULT),
+                ':image' => $image,
+                ':created_at' =>$created_at
+            ]);
+            $_SESSION['reg_message'] = "<div class='alert alert-success bg-success text-white'>User Registration Successfully</div>";
+            header("Location: " . LOGIN_URL, true, 301);
+        }catch (PDOException $e) {
+            $message = $e->getMessage();
         }
-
     }
+}
 ?>
     <!-- HOME -->
-    <section class="section-hero overlay inner-page bg-image" style="background-image: url('../public/images/hero_1.jpg');" id="home-section">
+    <section class="section-hero overlay inner-page bg-image" style="background-image: url('public/images/hero_1.jpg');" id="home-section">
       <div class="container">
         <div class="row">
           <div class="col-md-7">
@@ -66,7 +73,7 @@ global $connection;
               <div class="row form-group">
                 <div class="col-md-12 mb-3 mb-md-0">
                   <label class="text-black" for="userEmail">Email</label>
-                  <input name="userEmail" type="email" id="userEmail" class="form-control" placeholder="Email address">
+                  <input name="userEmail" type="text" id="userEmail" class="form-control" placeholder="Email address">
                 </div>
               </div>
                 <div class="row form-group">
@@ -102,4 +109,4 @@ global $connection;
       </div>
     </section>
 
-<?php require "../includes/footer.php"; ?>
+<?php require "includes/footer.php"; ?>

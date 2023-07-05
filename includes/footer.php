@@ -58,19 +58,19 @@
 </footer>
 </div>
 <!-- SCRIPTS -->
-<script src="../public/js/jquery.min.js"></script>
-<script src="../public/js/bootstrap.bundle.min.js"></script>
-<script src="../public/js/isotope.pkgd.min.js"></script>
-<script src="../public/js/stickyfill.min.js"></script>
-<script src="../public/js/jquery.fancybox.min.js"></script>
-<script src="../public/js/jquery.easing.1.3.js"></script>
-<script src="../public/js/jquery.waypoints.min.js"></script>
-<script src="../public/js/jquery.animateNumber.min.js"></script>
-<script src="../public/js/owl.carousel.min.js"></script>
-<script src="../public/js/quill.min.js"></script>
-<script src="../public/js/bootstrap-select.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/jquery.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/bootstrap.bundle.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/isotope.pkgd.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/stickyfill.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/jquery.fancybox.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/jquery.easing.1.3.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/jquery.waypoints.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/jquery.animateNumber.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/owl.carousel.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/quill.min.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/bootstrap-select.min.js"></script>
 <!--Toaster Script-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="../public/js/custom.js"></script>
+<script src="<?php echo BASE_URL ?>/public/js/custom.js"></script>
 </body>
 </html>
