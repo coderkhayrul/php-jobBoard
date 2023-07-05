@@ -1,6 +1,7 @@
 <?php
-require "config/config.php";
+ob_start();
 session_start();
+require "config/config.php";
 ?>
 <!doctype html>
 <html lang="en">
@@ -60,8 +61,14 @@ session_start();
               <li><a href="<?php echo BASE_URL ?>" class="nav-link active">Home</a></li>
               <li><a href="about.html">About</a></li>
               <li><a href="contact.html">Contact</a></li>
-              <li class="d-lg-none"><a href="post-job.html"><span class="mr-2">+</span> Post a Job</a></li>
-              <li class="d-lg-none"><a href="<?php echo BASE_URL ?>">Log In</a></li>
+            <?php if(! isset($_SESSION['auth_id'])) :?>
+                <li class="d-lg-none"><a href="login.php">Log In</a></li>
+                <li class="d-lg-none"><a href="<?php echo REGISTER_URL ?>">Register</a></li>
+            <?php else: ?>
+                <li class="d-lg-none"><a href="#"><span class="mr-2">+</span> Post a Job</a></li>
+                <li class="d-lg-none text-danger"><a href="logout.php">Logout</a></li>
+            <?php endif; ?>
+
             </ul>
           </nav>
 
@@ -78,6 +85,7 @@ session_start();
                             My Account <span class="ml-2 icon-keyboard_arrow_down"></span>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="<?php echo BASE_URL ?>/profile.php?id=<?php echo $_SESSION['auth_id']?> ">Public Profile</a>
                             <a class="dropdown-item" href="#">Edit Profile</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="<?php echo BASE_URL ?>/logout.php">Log Out</a>

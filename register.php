@@ -3,7 +3,7 @@ require "config/database.php";
 require "includes/header.php";
 
 global $connection;
-if (isset($_SESSION['auth_id'])) {
+if (isset($_SESSION['logged'])) {
     header("Location: " . BASE_URL, true, 301);
 }
 

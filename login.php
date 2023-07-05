@@ -2,7 +2,7 @@
 require "config/database.php";
 require "includes/header.php";
 global $connection;
-if (isset($_SESSION['auth_id'])) {
+if (isset($_SESSION['logged'])) {
     header("Location: " . BASE_URL, true, 301);
 }
 
@@ -21,6 +21,7 @@ if (isset($_POST['submit'])) {
             $user = $statement->fetch(PDO::FETCH_OBJ);
             if ($user) {
                 if (password_verify($password, $user->password)) {
+                    $_SESSION["logged"] = true;
                     $_SESSION['auth_id'] = $user->id;
                     $_SESSION['auth_name'] = $user->username;
                     $_SESSION['auth_email'] = $user->email;
