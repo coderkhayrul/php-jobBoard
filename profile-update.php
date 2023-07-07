@@ -27,38 +27,54 @@ if (isset($_POST['submit'])){
     $twitter_url = $_POST['twitter_url'];
     $linkedin_url = $_POST['linkedin_url'];
     $bio = $_POST['bio'];
+
+
 //  Image Upload
-    $image_name = $_FILES['image']['name'];
-    $extension = pathinfo($image_name, PATHINFO_EXTENSION);
-    $location = "public/upload/user/".rand(11111111, 99999999).".".$extension;
+    $image = $_FILES['image']['name'];
+    $extension = pathinfo($image, PATHINFO_EXTENSION);
+    $location = "public/upload/user/".random_int(11111111, 99999999).".".$extension;
+
+    $cv = $_FILES['cv']['name'];
+    $cv_extension = pathinfo($cv, PATHINFO_EXTENSION);
+    $cv_location = "public/upload/cv/".random_int(11111111, 99999999).".".$cv_extension;
 
 
-//  Validation Checks
-    if (empty($username)) {
+    //  Validation Checks
+    if (empty($_POST['username'])) {
         $_SESSION['error'] = "User Name is required";
-    }elseif (empty($email)){
+    }elseif (empty($_POST['email'])){
         $_SESSION['error'] = "User Email is required";
-    }elseif (empty($id)) {
+    }elseif (empty($_POST['auth_id'])) {
         $_SESSION['error'] = "User Id is required";
-    }
-
-    $update = $connection->prepare("UPDATE users SET username = :username, email = :email, title = :title, facebook_url = :facebook_url, twitter_url = :twitter_url, linkedin_url = :linkedin_url, bio = :bio, image = :image WHERE id = '$id'");
-    $update->execute([
-        ':username' => $username,
-        ':email' => $email,
-        ':title' => $title,
-        ':facebook_url' => $facebook_url,
-        ':twitter_url' => $twitter_url,
-        ':linkedin_url' => $linkedin_url,
-        ':bio' => $bio,
-        ':image' => $location,
-    ]);
-
-    if ($update) {
-        move_uploaded_file($_FILES['image']['tmp_name'], $location);
-        $_SESSION['success'] = "Profile Updated Successfully";
     }else{
-        $_SESSION['error'] = "Profile Update Failed";
+        $sql = "UPDATE users SET username = :username, email = :email, title = :title, facebook_url = :facebook_url, twitter_url = :twitter_url, linkedin_url = :linkedin_url, bio = :bio, image = :image, cv = :cv WHERE id = '$id'";
+        $update = $connection->prepare($sql);
+        $update->execute([
+            ':username' => $username,
+            ':email' => $email,
+            ':title' => $title,
+            ':facebook_url' => $facebook_url,
+            ':twitter_url' => $twitter_url,
+            ':linkedin_url' => $linkedin_url,
+            ':bio' => $bio,
+            ':image' => empty($image) ? $user->image : $location,
+            ':cv' => empty($cv) ? $user->cv : $cv_location,
+        ]);
+//        unlink image
+        if (!empty($image)) {
+            unlink($user->image);
+        }
+//        unlink cv
+        if (!empty($cv)) {
+            unlink($user->cv);
+        }
+        if ($update) {
+            move_uploaded_file($_FILES['image']['tmp_name'], $location);
+            move_uploaded_file($_FILES['cv']['tmp_name'], $cv_location);
+            $_SESSION['success'] = "Profile Updated Successfully";
+        }else{
+            $_SESSION['error'] = "Profile Update Failed";
+        }
     }
 
 }
@@ -132,7 +148,7 @@ if (isset($_POST['submit'])){
                     <div class="row form-group">
                         <div class="col-md-12">
                             <label class="text-black" for="cv">CV</label>
-                            <input type="file" id="cv" class="form-control">
+                            <input name="cv" type="file" id="cv" class="form-control">
                         </div>
                     </div>
                     <?php endif; ?>
