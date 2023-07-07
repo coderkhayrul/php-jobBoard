@@ -30,12 +30,12 @@ require "config/config.php";
   </head>
   <body id="top">
 
-  <div id="overlayer"></div>
-  <div class="loader">
-    <div class="spinner-border text-primary" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-  </div>
+<!--  <div id="overlayer"></div>-->
+<!--  <div class="loader">-->
+<!--    <div class="spinner-border text-primary" role="status">-->
+<!--      <span class="sr-only">Loading...</span>-->
+<!--    </div>-->
+<!--  </div>-->
 
 
 <div class="site-wrap">
@@ -86,7 +86,7 @@ require "config/config.php";
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="<?php echo BASE_URL ?>/profile.php?id=<?php echo $_SESSION['auth_id']?> ">Public Profile</a>
-                            <a class="dropdown-item" href="#">Edit Profile</a>
+                            <a class="dropdown-item" href="<?php echo BASE_URL."/profile-update.php" ?>">Edit Profile</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="<?php echo BASE_URL ?>/logout.php">Log Out</a>
                         </div>

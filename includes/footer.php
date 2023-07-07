@@ -72,5 +72,28 @@
 <!--Toaster Script-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="<?php echo BASE_URL ?>/public/js/custom.js"></script>
+
+<script>
+    // toastr.success("Hello World");
+    <?php
+    if (isset($_SESSION['success'])) {
+        echo "toastr.success('" . $_SESSION['success'] . "')";
+        unset($_SESSION['success']);
+    }
+    if (isset($_SESSION['error'])) {
+        echo "toastr.error('" . $_SESSION['error'] . "')";
+        unset($_SESSION['error']);
+    }
+    ?>
+    // Live Image Preview
+    $("#input_image").change(function () {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            $("#input_image_preview").attr("src", e.target.result);
+        };
+        reader.readAsDataURL(this.files[0]);
+    });
+
+</script>
 </body>
 </html>

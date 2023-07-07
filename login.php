@@ -25,6 +25,7 @@ if (isset($_POST['submit'])) {
                     $_SESSION['auth_id'] = $user->id;
                     $_SESSION['auth_name'] = $user->username;
                     $_SESSION['auth_email'] = $user->email;
+                    $_SESSION['auth_type'] = $user->usertype;
                     $_SESSION['auth_image'] = $user->image;
                     $_SESSION['auth_created_at'] = $user->created_at;
                     header("Location: " . BASE_URL, true, 301);
