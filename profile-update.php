@@ -28,7 +28,6 @@ if (isset($_POST['submit'])){
     $linkedin_url = $_POST['linkedin_url'];
     $bio = $_POST['bio'];
 
-
 //  Image Upload
     $image = $_FILES['image']['name'];
     $extension = pathinfo($image, PATHINFO_EXTENSION);
@@ -37,7 +36,6 @@ if (isset($_POST['submit'])){
     $cv = $_FILES['cv']['name'];
     $cv_extension = pathinfo($cv, PATHINFO_EXTENSION);
     $cv_location = "public/upload/cv/".random_int(11111111, 99999999).".".$cv_extension;
-
 
     //  Validation Checks
     if (empty($_POST['username'])) {
