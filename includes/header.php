@@ -64,8 +64,11 @@ require "config/config.php";
             <?php if(! isset($_SESSION['auth_id'])) :?>
                 <li class="d-lg-none"><a href="login.php">Log In</a></li>
                 <li class="d-lg-none"><a href="<?php echo REGISTER_URL ?>">Register</a></li>
-            <?php else: ?>
-                <li class="d-lg-none"><a href="#"><span class="mr-2">+</span> Post a Job</a></li>
+            <?php else: if($_SESSION['auth_type'] === 'company'):?>
+                <li class="d-lg-none"><a href="<?php echo BASE_URL . 'post-job.php' ?>">
+                        <span class="mr-2">+</span> Post a Job</a>
+                </li>
+            <?php endif; ?>
                 <li class="d-lg-none text-danger"><a href="logout.php">Logout</a></li>
             <?php endif; ?>
 
@@ -78,8 +81,9 @@ require "config/config.php";
                 <?php if(! isset($_SESSION['auth_id'])) :?>
                     <a href="<?php echo LOGIN_URL; ?>" class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span class="mr-2 icon-lock_outline"></span>Log In</a>
                     <a href="<?php echo REGISTER_URL; ?>" class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span class="mr-2 icon-lock_outline"></span>Register</a>
-                <?php else: ?>
-                    <a href="post-job.html" class="btn btn-outline-white border-width-2 d-none d-lg-inline-block"><span class="mr-2 icon-add"></span>Post a Job</a>
+                <?php else: if($_SESSION['auth_type'] === 'company'):?>
+                    <a href="<?php echo BASE_URL . '/post-job.php' ?>" class="btn btn-outline-white border-width-2 d-none d-lg-inline-block"><span class="mr-2 icon-add"></span>Post a Job</a>
+                <?php endif; ?>
                     <div class="dropdown border-width-2 d-none d-lg-inline-block">
                         <button class="btn btn-outline-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             My Account <span class="ml-2 icon-keyboard_arrow_down"></span>

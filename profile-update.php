@@ -33,9 +33,11 @@ if (isset($_POST['submit'])){
     $extension = pathinfo($image, PATHINFO_EXTENSION);
     $location = "public/upload/user/".random_int(11111111, 99999999).".".$extension;
 
+if ($_SESSION['auth_type'] === 'worker'){
     $cv = $_FILES['cv']['name'];
     $cv_extension = pathinfo($cv, PATHINFO_EXTENSION);
     $cv_location = "public/upload/cv/".random_int(11111111, 99999999).".".$cv_extension;
+}
 
     //  Validation Checks
     if (empty($_POST['username'])) {
@@ -45,30 +47,48 @@ if (isset($_POST['submit'])){
     }elseif (empty($_POST['auth_id'])) {
         $_SESSION['error'] = "User Id is required";
     }else{
-        $sql = "UPDATE users SET username = :username, email = :email, title = :title, facebook_url = :facebook_url, twitter_url = :twitter_url, linkedin_url = :linkedin_url, bio = :bio, image = :image, cv = :cv WHERE id = '$id'";
-        $update = $connection->prepare($sql);
-        $update->execute([
-            ':username' => $username,
-            ':email' => $email,
-            ':title' => $title,
-            ':facebook_url' => $facebook_url,
-            ':twitter_url' => $twitter_url,
-            ':linkedin_url' => $linkedin_url,
-            ':bio' => $bio,
-            ':image' => empty($image) ? $user->image : $location,
-            ':cv' => empty($cv) ? $user->cv : $cv_location,
-        ]);
+        if ($_SESSION['auth_type'] === 'worker'){
+            $sql = "UPDATE users SET username = :username, email = :email, title = :title, facebook_url = :facebook_url, twitter_url = :twitter_url, linkedin_url = :linkedin_url, bio = :bio, image = :image, cv = :cv WHERE id = '$id'";
+            $update = $connection->prepare($sql);
+            $update->execute([
+                ':username' => $username,
+                ':email' => $email,
+                ':title' => $title,
+                ':facebook_url' => $facebook_url,
+                ':twitter_url' => $twitter_url,
+                ':linkedin_url' => $linkedin_url,
+                ':bio' => $bio,
+                ':image' => empty($image) ? $user->image : $location,
+                ':cv' => empty($cv) ? $user->cv : $cv_location,
+            ]);
+        }else{
+            $sql = "UPDATE users SET username = :username, email = :email, title = :title, facebook_url = :facebook_url, twitter_url = :twitter_url, linkedin_url = :linkedin_url, bio = :bio, image = :image WHERE id = '$id'";
+            $update = $connection->prepare($sql);
+            $update->execute([
+                ':username' => $username,
+                ':email' => $email,
+                ':title' => $title,
+                ':facebook_url' => $facebook_url,
+                ':twitter_url' => $twitter_url,
+                ':linkedin_url' => $linkedin_url,
+                ':bio' => $bio,
+                ':image' => empty($image) ? $user->image : $location,
+            ]);
+        }
+
 //        unlink image
         if (!empty($image)) {
             unlink($user->image);
         }
 //        unlink cv
-        if (!empty($cv)) {
+        if ( ($_SESSION['auth_type'] === 'worker') && !empty($cv)) {
             unlink($user->cv);
         }
         if ($update) {
             move_uploaded_file($_FILES['image']['tmp_name'], $location);
-            move_uploaded_file($_FILES['cv']['tmp_name'], $cv_location);
+            if ($_SESSION['auth_type'] === 'worker'){
+                move_uploaded_file($_FILES['cv']['tmp_name'], $cv_location);
+            }
             $_SESSION['success'] = "Profile Updated Successfully";
         }else{
             $_SESSION['error'] = "Profile Update Failed";
